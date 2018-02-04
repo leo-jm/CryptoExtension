@@ -27,24 +27,28 @@ function checkbuttons(){
 function page2(){
 	document.getElementById("page1").className='closed'
 	document.getElementById("page2").className='open'
-	var x = document.getElementById("address").value;
-		if (x.length != 0) {
-			var page1 = document.getElementById("page1");
-			var page2 = document.getElementById("page2");
-			var page1val = "none"
-			var page2val = "block"
-			var page1class = 'closed'
-			var page2class = 'open'
+	var address = document.getElementById("address").value;
+	var amount = document.getElementById('amount').value;
+	var coin = document.getElementById('coin').value;
+		if (address.length != 0) {
+			if (amount.length != 0){
+				var page1 = document.getElementById("page1");
+				var page2 = document.getElementById("page2");
+				var page1val = "none"
+				var page2val = "block"
+				var page1class = 'closed'
+				var page2class = 'open'
+			}
 		}
-		//Saving page and address data to storage
-		chrome.storage.sync.set({'page1':page1val,'page2':page2val,'address':x, 'page1class':page1class,'page2class':page2class});
+		//Saving page and transaction data to storage
+		chrome.storage.sync.set({'page1':page1val,'page2':page2val,'address':address,'amount':amount, 'coin':coin,'page1class':page1class,'page2class':page2class});
 		getpagevals(load)
 
 }
-//Retrieve page and address data from storage
+//Retrieve page and transaction data from storage
 function getpagevals(callback){
 	var pagevals = [];
-	chrome.storage.sync.get(['page1','page2','address','page1class','page2class'], function(items){
+	chrome.storage.sync.get(['page1','page2','address','amount','coin','page1class','page2class'], function(items){
 		if (!chrome.runtime.error) {
 			pagevals = items;
 			callback(pagevals);
@@ -62,11 +66,15 @@ function load(val){
 	var page1 = document.getElementById("page1");
 	var page2 = document.getElementById("page2");
 	var address = val.address
+	var amount = val.amount
+	var coin = val.coin
 	page1.style.display = page1val
 	page2.style.display = page2val
 	page1.className = page1class
 	page2.className = page2class
 	document.getElementById("addresstext").innerHTML = address;
+	document.getElementById("amounttext").innerHTML = amount;
+	document.getElementById("cointext").innerHTML = coin;
 	checkbuttons()
 }
 // Checks for the enter button to be pressed on page 1
@@ -79,9 +87,9 @@ function checkbuttonpress(){
 function checkcancelpage2(){
 	document.getElementById("cancelpage2").addEventListener('click',resetpages)
 }
-//Sets the page data and address datat back to default
+//Sets the page data and transaction datat back to default
 function resetpages(){
-	chrome.storage.sync.set({'page1':'block','page2':'none','address':'', 'page1class':'open','page2class':'closed'});
+	chrome.storage.sync.set({'page1':'block','page2':'none','address':'','amount':'', 'page1class':'open','page2class':'closed'});
 	getpagevals(load)
 }
 //Initial Function called
