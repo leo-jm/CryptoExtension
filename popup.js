@@ -4,12 +4,20 @@ function myFunction() {
 		document.getElementById("demo").innerHTML = x;
 		}	
 	}
-function checkload(){
-	document.getElementById('mainpage').addEventListener('load',getpagevals(load))
-	if (document.getElementById("page2").className='open'){
+function checkload(callback){
+	getpagevals(load)
+	/*document.getElementById('mainpage').addEventListener('load',getpagevals(load))*/
+	checkbuttons()
+}
+function checkbuttons(){
+	page1class = document.getElementById("page1").className
+	page2class = document.getElementById("page2").className
+	console.log(page2class)
+	if (page2class == 'open'){
+		document.getElementById("demo2").innerHTML = 'test'
 		checkcancelpage2()
 	}else{
-		if(document.getElementById("page1").className='open'){
+		if(page1class == 'open'){
 		document.getElementById("demo").innerHTML = 'test'
 		checkbuttonpress()
 		}
