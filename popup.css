@@ -1,0 +1,12 @@
+body {
+	  min-height:500px;
+	  min-width: 400px;
+      white-space: nowrap;
+      }
+
+      h1 {
+        font-size: 15px;
+      }
+	  placeholder{
+		color:#7f8184;
+		}
