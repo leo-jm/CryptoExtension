@@ -8,6 +8,11 @@
 		<div id="page1" style="display:block;" class = "open">
 			<h1>Enter your address</h1>
 			Address: <input type="text" id="address" placeholder="Enter address" style='color:#000000;display:block'>
+			<button id='enterbutton1'>Enter</button>
+			<p id="demo"></p>
+		</div>
+		<div id = "page2" style = "display:none;" class = "closed">
+			<button id = 'cancelpage2'>Cancel</button>
 			Amount: <input type ="number" id="amount" placeholder ="Enter amount to send" style='color:#000000;display:block'>
 			Choose coin: 
 			<select id='coin'>
@@ -15,11 +20,10 @@
 				<option value = 'ethereum'>Ethereum</option>
 				<option value = 'litecoin'>Litecoin</option>
 			</select>
-			<button id='enterbutton'>Enter</button>
-			<p id="demo"></p>
+			<button id='enterbutton2'>Enter</button>
 		</div>
-		<div id = "page2" style = "display:none;" class = "closed">
-			<button id = 'cancelpage2'>Cancel</button>
+		<div id = "page3" style = "display:none;" class = "closed">
+			<button id = 'cancelpage3'>Cancel</button>
 			<p id="addresstext"></p>
 			<p id = 'amounttext'></p>
 			<p id="cointext"></p>

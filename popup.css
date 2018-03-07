@@ -4,9 +4,10 @@ body {
       white-space: nowrap;
       }
 
-      h1 {
-        font-size: 15px;
-      }
-	  placeholder{
-		color:#7f8184;
-		}
+h1 {
+    font-size: 15px;
+    }
+	
+placeholder{
+	color:#7f8184;
+	}
