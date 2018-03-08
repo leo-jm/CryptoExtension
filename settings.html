@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Getting Started Extension's Popup</title>
+		<link rel="stylesheet" type="text/css" href="popup.css">
+	</head>
+	<body id = 'mainpage'>
+		<h1>Enter your API Keys</h1>
+		<p id = 'demo'></p>
+		<select id='wallet'>
+				<option value = 'coinpayments'>CoinPayments</option>
+				<option value = 'coinbase'>Coinbase</option>
+		</select>
+		<div id = 'coinpayments' style='display:block;' class = 'open'>
+			Public Key: <input type="text" id="pub_key" placeholder="Enter key" style='color:#000000;display:block'>
+			Private Key: <input type="text" id="priv_key" placeholder="Enter key" style='color:#000000;display:block'>
+			<button id='enterbutton1'>Enter</button>
+		</div>
+		<div id = 'coinbase' style='display:none;' class = 'closed'>
+			coinbase
+			<button id='enterbutton2'>Enter</button>
+		</div>
+		<script src="settings.js"></script>
+	</body>
+</html>

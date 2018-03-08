@@ -83,7 +83,7 @@ function page3(){
 //Retrieve page and transaction data from storage
 function getpagevals(callback){
 	var pagevals = [];
-	chrome.storage.sync.get(['page1','page2','page3','address','amount','coin','page1class','page2class','page3class'], function(items){
+	chrome.storage.sync.get(['page1','page2','page3','address','amount','coin','page1class','page2class','page3class','pub_cp','priv_cp'], function(items){
 		if (!chrome.runtime.error) {
 			pagevals = items;
 			callback(pagevals);
@@ -107,6 +107,8 @@ function load(val){
 	var address = val.address
 	var amount = val.amount
 	var coin = val.coin
+	var pub = val.pub_cp 
+	var priv = val.priv_cp
 	page1.style.display = page1val
 	page2.style.display = page2val
 	page3.style.display = page3val
@@ -116,6 +118,8 @@ function load(val){
 	document.getElementById("addresstext").innerHTML = address;
 	document.getElementById("amounttext").innerHTML = amount;
 	document.getElementById("cointext").innerHTML = coin;
+	document.getElementById("key1").innerHTML = pub 
+	document.getElementById("key2").innerHTML = priv 
 	checkbuttons()
 }
 // Checks for the enter button to be pressed on page 1
