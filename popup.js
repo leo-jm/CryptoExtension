@@ -80,7 +80,6 @@ function page3(){
 		//Saving page and transaction data to storage
 		chrome.storage.sync.set({'page1':page1val,'page2':page2val, 'page3':page3val, 'amount':amount, 'coin':coin,'page1class':page1class,'page2class':page2class, 'page3class':page3class});
 		getpagevals(load)
-	walletdata(pub,priv)
 }
 //Retrieve page and transaction data from storage
 function getpagevals(callback){
@@ -120,8 +119,9 @@ function load(val){
 	document.getElementById("addresstext").innerHTML = address;
 	document.getElementById("amounttext").innerHTML = amount;
 	document.getElementById("cointext").innerHTML = coin;
-	document.getElementById("key1").innerHTML = pub 
-	document.getElementById("key2").innerHTML = priv 
+	if (page3class == 'open'){
+		walletdata(pub,priv)
+	}
 	checkbuttons()
 }
 // Checks for the enter button to be pressed on page 1
@@ -166,14 +166,24 @@ function walletdata(pub,priv){
 	call = call.concat(pub)
 	hmac(call,priv)
 }
-fun
-ction getwalletinfo(call,hmac) {
+
+function getwalletinfo(call,hmac) {
   var xhttp = new XMLHttpRequest();
   var HMAC = hmac;
   var params = call
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("demo2").innerHTML = this.responseText;
+		console.log('test5')
+		var responseObj = JSON.parse(this.responseText);
+		console.log(responseObj.result)
+		var coinname = Object.keys(responseObj.result)
+		document.getElementById("coinname").innerHTML = coinname;
+		var result = responseObj.result
+		console.log(result)
+		var coindetails = result[coinname]
+		console.log(coindetails)
+		var balance = coindetails.balancef
+		document.getElementById("balance").innerHTML = balance;
     }
   };
   xhttp.open("POST", "https://www.coinpayments.net/api.php", true);
@@ -181,7 +191,6 @@ ction getwalletinfo(call,hmac) {
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhttp.send(params);
 }
-
 
 //Initial Function called
 checkload()
