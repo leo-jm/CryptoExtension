@@ -194,7 +194,7 @@ function getwalletinfo(call,hmac) {
 		newdiv.appendChild(p1)
 		newdiv.appendChild(p2)
 		newdiv.appendChild(p3)
-		newdiv.setAttribute('id','newdiv')
+		newdiv.setAttribute('id','tempdiv')
 		var page3 = document.getElementById('page3')
 		page3.appendChild(newdiv)
     }
