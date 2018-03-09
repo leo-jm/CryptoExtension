@@ -116,9 +116,8 @@ function load(val){
 	page1.className = page1class
 	page2.className = page2class
 	page3.className = page3class
-	document.getElementById("addresstext").innerHTML = address;
-	document.getElementById("amounttext").innerHTML = amount;
-	document.getElementById("cointext").innerHTML = coin;
+	var transactioninfo = 'Address: &nbsp;'+address + '<br/>' +"Amount: &nbsp;"+amount+' &nbsp;&nbsp;&nbsp;&nbsp;'+"Coin: &nbsp;"+coin
+	document.getElementById("transactioninfo").innerHTML = transactioninfo;
 	if (page3class == 'open'){
 		walletdata(pub,priv)
 	}
@@ -174,16 +173,30 @@ function getwalletinfo(call,hmac) {
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
 		console.log('test5')
+		var p1 = document.createElement("p");
+		var title = document.createTextNode('CoinPayments');
+		p1.appendChild(title);
 		var responseObj = JSON.parse(this.responseText);
 		console.log(responseObj.result)
 		var coinname = Object.keys(responseObj.result)
-		document.getElementById("coinname").innerHTML = coinname;
+		var p2 = document.createElement("p");
+		var name = document.createTextNode(coinname);
+		p2.appendChild(name);
 		var result = responseObj.result
 		console.log(result)
 		var coindetails = result[coinname]
 		console.log(coindetails)
 		var balance = coindetails.balancef
-		document.getElementById("balance").innerHTML = balance;
+		var p3 = document.createElement("p");
+		var balance = document.createTextNode(balance);
+		p3.appendChild(balance);
+		var newdiv = document.createElement('div');
+		newdiv.appendChild(p1)
+		newdiv.appendChild(p2)
+		newdiv.appendChild(p3)
+		newdiv.setAttribute('id','newdiv')
+		var page3 = document.getElementById('page3')
+		page3.appendChild(newdiv)
     }
   };
   xhttp.open("POST", "https://www.coinpayments.net/api.php", true);
