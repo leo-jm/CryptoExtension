@@ -1,4 +1,6 @@
 //Test Function
+var pub = ''
+var priv = ''
 function myFunction() {
 	var x = document.getElementById("address").value;
 	if (x.length != 0) {
@@ -78,7 +80,7 @@ function page3(){
 		//Saving page and transaction data to storage
 		chrome.storage.sync.set({'page1':page1val,'page2':page2val, 'page3':page3val, 'amount':amount, 'coin':coin,'page1class':page1class,'page2class':page2class, 'page3class':page3class});
 		getpagevals(load)
-
+	walletdata(pub,priv)
 }
 //Retrieve page and transaction data from storage
 function getpagevals(callback){
@@ -107,8 +109,8 @@ function load(val){
 	var address = val.address
 	var amount = val.amount
 	var coin = val.coin
-	var pub = val.pub_cp 
-	var priv = val.priv_cp
+	pub = val.pub_cp 
+	priv = val.priv_cp
 	page1.style.display = page1val
 	page2.style.display = page2val
 	page3.style.display = page3val
@@ -149,5 +151,37 @@ function resetpages(){
 	chrome.storage.sync.set({'page1':'block','page2':'none','page3':'none','address':'','amount':'', 'page1class':'open','page2class':'closed','page3class':'closed'});
 	getpagevals(load)
 }
+
+function hmac(call,priv){
+	console.log('test')
+	var shaObj = new jsSHA("SHA-512", "TEXT");
+	shaObj.setHMACKey(priv, "TEXT");
+	shaObj.update(call);
+	var hmac = shaObj.getHMAC("HEX");
+	getwalletinfo(call,hmac)
+}
+
+function walletdata(pub,priv){
+	var call = 'version=1&cmd=balances&key='
+	call = call.concat(pub)
+	hmac(call,priv)
+}
+fun
+ction getwalletinfo(call,hmac) {
+  var xhttp = new XMLHttpRequest();
+  var HMAC = hmac;
+  var params = call
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("demo2").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("POST", "https://www.coinpayments.net/api.php", true);
+  xhttp.setRequestHeader('HMAC',HMAC);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhttp.send(params);
+}
+
+
 //Initial Function called
 checkload()
