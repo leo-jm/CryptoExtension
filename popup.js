@@ -1,19 +1,20 @@
-//Test Function
 var pub = ''
 var priv = ''
 function myFunction() {
+	//Test Function
 	var x = document.getElementById("address").value;
 	if (x.length != 0) {
 		document.getElementById("demo").innerHTML = x;
 		}	
 	}
-//Loads the page, initial function
+
 function checkload(){
+	//Loads the page, initial function
 	getpagevals(load)
-	//document.getElementById('mainpage').addEventListener('load',getpagevals(load))
 }
-//Decides what buttons to check for
+
 function checkbuttons(){
+	//Decides what buttons to check for
 	var page1class = document.getElementById("page1").className
 	var page2class = document.getElementById("page2").className
 	var page3class = document.getElementById("page3").className
@@ -34,8 +35,9 @@ function checkbuttons(){
 		}
 	}
 }
-//Function for going to page 2
+
 function page2(){
+	//Function for going to page 2
 	document.getElementById("page1").className='closed'
 	document.getElementById("page2").className='open'
 	document.getElementById("page3").className='closed'
@@ -56,7 +58,9 @@ function page2(){
 		getpagevals(load)
 
 }
+
 function page3(){
+	//function for going to page 3
 	console.log('page3')
 	document.getElementById("page1").className='closed'
 	document.getElementById("page2").className='closed'
@@ -81,8 +85,9 @@ function page3(){
 		chrome.storage.sync.set({'page1':page1val,'page2':page2val, 'page3':page3val, 'amount':amount, 'coin':coin,'page1class':page1class,'page2class':page2class, 'page3class':page3class});
 		getpagevals(load)
 }
-//Retrieve page and transaction data from storage
+
 function getpagevals(callback){
+	//Retrieve page and transaction data from storage
 	var pagevals = [];
 	chrome.storage.sync.get(['page1','page2','page3','address','amount','coin','page1class','page2class','page3class','pub_cp','priv_cp'], function(items){
 		if (!chrome.runtime.error) {
@@ -91,8 +96,9 @@ function getpagevals(callback){
 		}
 	});
 }
-//Loads in the page based on saved data, called in the callback for function getpagevals()
+
 function load(val){
+	//Loads in the page based on saved data, called in the callback for function getpagevals()
 	var page1val = 'base'
 	var page2val = 'base'
 	var page3val = 'base'
@@ -123,35 +129,42 @@ function load(val){
 	}
 	checkbuttons()
 }
-// Checks for the enter button to be pressed on page 1
+
 function checkbuttonpress1(){
+	// Checks for the enter button to be pressed on page 1
 	document.getElementById("page1").className='open'
 	document.getElementById("page2").className='closed'
 	document.getElementById("page3").className='closed'
 	document.getElementById("enterbutton1").addEventListener('click',page2)
 }
-// Checks for the enter button to be pressed on page 2
+
 function checkbuttonpress2(){
+	// Checks for the enter button to be pressed on page 2
 	document.getElementById("page1").className='closed'
 	document.getElementById("page2").className='open'
 	document.getElementById("page3").className='closed'
 	console.log('check')
 	document.getElementById("enterbutton2").addEventListener('click',page3)
 }
-//Checks for the cancel button to be pressed on page 2
+
 function checkcancelpage2(){
+	//Checks for the cancel button to be pressed on page 2
 	document.getElementById("cancelpage2").addEventListener('click',resetpages)
 }
+
 function checkcancelpage3(){
+	//Checks for the cancel button to be pressed on page 3
 	document.getElementById("cancelpage3").addEventListener('click',resetpages)
 }
-//Sets the page data and transaction datat back to default
+
 function resetpages(){
+	//Sets the page data and transaction datat back to default
 	chrome.storage.sync.set({'page1':'block','page2':'none','page3':'none','address':'','amount':'', 'page1class':'open','page2class':'closed','page3class':'closed'});
 	getpagevals(load)
 }
 
 function hmac(call,priv){
+	// Creating Sha512 HMAC signature Credit: https://github.com/Caligatio/jsSHA Uses the files in src-sha folder
 	console.log('test')
 	var shaObj = new jsSHA("SHA-512", "TEXT");
 	shaObj.setHMACKey(priv, "TEXT");
@@ -161,32 +174,35 @@ function hmac(call,priv){
 }
 
 function walletdata(pub,priv){
+	// creates the API call for fetching wallet data and balances
 	var call = 'version=1&cmd=balances&key='
 	call = call.concat(pub)
 	hmac(call,priv)
 }
 
 function getwalletinfo(call,hmac) {
-  var xhttp = new XMLHttpRequest();
-  var HMAC = hmac;
-  var params = call
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
+	//Makes api call using an HTTP POST call
+	//Parses through call result and creates a div of the data to be displayed
+	var xhttp = new XMLHttpRequest();
+	var HMAC = hmac;
+	var params = call
+	xhttp.onreadystatechange = function() {
+	if (this.readyState == 4 && this.status == 200) {
 		console.log('test5')
-		var p1 = document.createElement("p");
-		var title = document.createTextNode('CoinPayments');
-		p1.appendChild(title);
 		var responseObj = JSON.parse(this.responseText);
 		console.log(responseObj.result)
 		var coinname = Object.keys(responseObj.result)
-		var p2 = document.createElement("p");
-		var name = document.createTextNode(coinname);
-		p2.appendChild(name);
 		var result = responseObj.result
 		console.log(result)
 		var coindetails = result[coinname]
 		console.log(coindetails)
 		var balance = coindetails.balancef
+		var p1 = document.createElement("p");
+		var title = document.createTextNode('CoinPayments');
+		p1.appendChild(title);
+		var p2 = document.createElement("p");
+		var name = document.createTextNode(coinname);
+		p2.appendChild(name);
 		var p3 = document.createElement("p");
 		var balance = document.createTextNode(balance);
 		p3.appendChild(balance);
@@ -197,12 +213,12 @@ function getwalletinfo(call,hmac) {
 		newdiv.setAttribute('id','tempdiv')
 		var page3 = document.getElementById('page3')
 		page3.appendChild(newdiv)
-    }
-  };
-  xhttp.open("POST", "https://www.coinpayments.net/api.php", true);
-  xhttp.setRequestHeader('HMAC',HMAC);
-  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xhttp.send(params);
+	}
+	};
+	xhttp.open("POST", "https://www.coinpayments.net/api.php", true);
+	xhttp.setRequestHeader('HMAC',HMAC);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(params);
 }
 
 //Initial Function called
