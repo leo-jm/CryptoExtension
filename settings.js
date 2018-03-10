@@ -21,6 +21,7 @@ function coinbase(){
 }
 
 function choosewallet(){
+	console.log('test1')
 	var wallet = document.getElementById('wallet').value;
 	if (wallet == 'coinpayments'){
 		coinpayments()
@@ -55,5 +56,5 @@ function entercp(){
 function entercb(){
 	document.getElementById('demo').innerHTML = 'entercb'
 }
-
+coinpayments()
 check()
