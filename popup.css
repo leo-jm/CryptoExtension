@@ -11,3 +11,11 @@ h1 {
 placeholder{
 	color:#7f8184;
 	}
+	
+.tempdiv{
+	border-style: solid;
+	margin-top:5px;
+	margin-bottom: 5px;
+	padding:10px;
+	max-width: 500px;
+}

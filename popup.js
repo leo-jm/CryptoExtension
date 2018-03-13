@@ -189,7 +189,23 @@ function getwalletinfo(call,hmac) {
 	xhttp.onreadystatechange = function() {
 	if (this.readyState == 4 && this.status == 200) {
 		var responseObj = JSON.parse(this.responseText);
-		parseresponse(responseObj)
+		console.log(responseObj)
+		console.log(responseObj.result)
+		var coinname = Object.keys(responseObj.result)
+		console.log(coinname)
+		for (i = 0, len = coinname.length; i < len; i++){
+			var result = responseObj.result
+			console.log(i)
+			console.log(coinname[0])
+			var key = coinname[i]
+			var coindetails = result[key]
+			console.log(coindetails)
+			var balance = coindetails.balancef
+			var id = 'tempdiv'
+			id = id.concat(i+1)
+			var temp = new tempwalletinfo('CoinPayments',coinname[i],balance,id,'tempdiv')
+			temp.creatediv(balance)
+			}
 	}
 	};
 	xhttp.open("POST", "https://www.coinpayments.net/api.php", true);
@@ -198,22 +214,8 @@ function getwalletinfo(call,hmac) {
 	xhttp.send(params);
 }
 
-function parseresponse(resonseObj){
-	console.log('test5')
-	console.log(responseObj)
-	console.log(responseObj.result)
-	var coinname = Object.keys(responseObj.result)
-	var result = responseObj.result
-	console.log(result)
-	var coindetails = result[coinname]
-	console.log(coindetails)
-	var balance = coindetails.balancef
-	//
-	var temp = new tempwalletinfo('CoinPayments',coinname,balance,'tempdiv1')
-	temp.creatediv(balance)
-}
 
-function tempwalletinfo(title,coinname,balance,id){
+function tempwalletinfo(title,coinname,balance,id,divclass){
 	this.title = title;
 	this.coinname =coinname;
 	this.balance = balance;
@@ -233,6 +235,7 @@ function tempwalletinfo(title,coinname,balance,id){
 		newdiv.appendChild(p2)
 		newdiv.appendChild(p3)
 		newdiv.setAttribute('id',id)
+		newdiv.setAttribute('class',divclass)
 		var page3 = document.getElementById('page3')
 		page3.appendChild(newdiv)
 	};
