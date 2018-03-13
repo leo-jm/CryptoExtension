@@ -1,0 +1,20 @@
+body {
+	  min-height:500px;
+	  min-width: 400px;
+      white-space: nowrap;
+      }
+
+h1 {
+    font-size: 50px;
+    }
+	
+placeholder{
+	color:#7f8184;
+	}
+.tempdiv{
+	border-style: solid;
+	margin-top:5px;
+	margin-bottom: 5px;
+	padding:10px;
+	max-width: 500px;
+}

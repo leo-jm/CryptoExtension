@@ -1,0 +1,17 @@
+{
+    "error": "ok",
+    "result": {
+        "BTC": {
+            "balance": 10000000,
+            "balancef": 0.10000000,
+        }
+		"XRP":{
+			"balance": 1012938,
+            "balancef": 101.2938,
+		}
+		"LTC":{
+			"balance": 100000,
+            "balancef": 10.923,
+		}
+    }
+}

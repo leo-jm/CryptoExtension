@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>The XMLHttpRequest Object</h1>
+
+<p id="demo">Let AJAX change this text.</p>
+
+<button type="button" onclick="loadDoc()">Change Content</button>
+
+<script>
+
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  var HMAC = '358058a441dd2115efe75f8e21bd233a0ffec73dbef592b03fb76a622920ac83720f798aa7567976bb80a3017808b76482f35a5f3832ea29cd02df9d8218325f';
+  var params = "version=1&cmd=balances&key=679b75dd6cc96fb752487ed55fe55b6d91bae1d866d9cfe25a299a886e8781b3"
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("demo").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("POST", "https://www.coinpayments.net/api.php", true);
+  xhttp.setRequestHeader('HMAC',HMAC);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhttp.send(params);
+}
+</script>
+</body>
+</html>

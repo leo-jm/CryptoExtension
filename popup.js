@@ -188,18 +188,40 @@ function getwalletinfo(call,hmac) {
 	var params = call
 	xhttp.onreadystatechange = function() {
 	if (this.readyState == 4 && this.status == 200) {
-		console.log('test5')
 		var responseObj = JSON.parse(this.responseText);
-		console.log(responseObj.result)
-		var coinname = Object.keys(responseObj.result)
-		var result = responseObj.result
-		console.log(result)
-		var coindetails = result[coinname]
-		console.log(coindetails)
-		var balance = coindetails.balancef
+		parseresponse(responseObj)
+	}
+	};
+	xhttp.open("POST", "https://www.coinpayments.net/api.php", true);
+	xhttp.setRequestHeader('HMAC',HMAC);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(params);
+}
+
+function parseresponse(resonseObj){
+	console.log('test5')
+	console.log(responseObj)
+	console.log(responseObj.result)
+	var coinname = Object.keys(responseObj.result)
+	var result = responseObj.result
+	console.log(result)
+	var coindetails = result[coinname]
+	console.log(coindetails)
+	var balance = coindetails.balancef
+	//
+	var temp = new tempwalletinfo('CoinPayments',coinname,balance,'tempdiv1')
+	temp.creatediv(balance)
+}
+
+function tempwalletinfo(title,coinname,balance,id){
+	this.title = title;
+	this.coinname =coinname;
+	this.balance = balance;
+	this.id = id;
+	this.creatediv = function(balance) {
 		var p1 = document.createElement("p");
-		var title = document.createTextNode('CoinPayments');
-		p1.appendChild(title);
+		var divtitle = document.createTextNode(title);
+		p1.appendChild(divtitle);
 		var p2 = document.createElement("p");
 		var name = document.createTextNode(coinname);
 		p2.appendChild(name);
@@ -210,15 +232,10 @@ function getwalletinfo(call,hmac) {
 		newdiv.appendChild(p1)
 		newdiv.appendChild(p2)
 		newdiv.appendChild(p3)
-		newdiv.setAttribute('id','tempdiv')
+		newdiv.setAttribute('id',id)
 		var page3 = document.getElementById('page3')
 		page3.appendChild(newdiv)
-	}
 	};
-	xhttp.open("POST", "https://www.coinpayments.net/api.php", true);
-	xhttp.setRequestHeader('HMAC',HMAC);
-	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhttp.send(params);
 }
 
 //Initial Function called
