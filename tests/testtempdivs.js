@@ -1,3 +1,5 @@
+//https://toddmotto.com/attaching-event-handlers-to-dynamically-created-javascript-elements/
+
 function test(){
 	document.getElementById('demo').innerHTML = 'test'
 }
@@ -19,17 +21,12 @@ function parseresponse(){
 			}
 		}
 	}
-	console.log(responseObj)
-	console.log(responseObj.result)
 	var coinname = Object.keys(responseObj.result)
-	console.log(coinname)
+    var idlist = []
 	for (i = 0, len = coinname.length; i < len; i++){
 		var result = responseObj.result
-		console.log(i)
-		console.log(coinname[0])
 		var key = coinname[i]
 		var coindetails = result[key]
-		console.log(coindetails)
 		var balance = coindetails.balancef
 		var id = 'tempdiv'
 		id = id.concat(i+1)
@@ -38,11 +35,21 @@ function parseresponse(){
 		}
 }
 
+function hover(){
+   this.className='tempdivhover'
+}
+function unhover(){
+    this.className = 'tempdiv'
+}
+function chosen(){
+    console.log(this)
+}
 function tempwalletinfo(title,coinname,balance,id,divclass){
 	this.title = title;
 	this.coinname =coinname;
 	this.balance = balance;
 	this.id = id;
+	this.divclass = divclass;
 	this.creatediv = function(balance) {
 		var p1 = document.createElement("p");
 		var divtitle = document.createTextNode(title);
@@ -53,13 +60,24 @@ function tempwalletinfo(title,coinname,balance,id,divclass){
 		var p3 = document.createElement("p");
 		var balance = document.createTextNode(balance);
 		p3.appendChild(balance);
+        /*
+        var button = document.createElement('button');
+        var buttonid = id.concat('button')
+        var buttonwords = document.createTextNode('test')
+        button.appendChild(buttonwords)
+        button.setAttribute('id',buttonid)
+        */
 		var newdiv = document.createElement('div');
 		newdiv.appendChild(p1)
 		newdiv.appendChild(p2)
 		newdiv.appendChild(p3)
+        //newdiv.appendChild(button)
 		newdiv.setAttribute('id',id)
 		newdiv.setAttribute('class',divclass)
 		var page3 = document.getElementById('test')
 		page3.appendChild(newdiv)
+        newdiv.onmouseover = hover
+        newdiv.onmouseout = unhover
+        newdiv.onclick = chosen
 	};
 }

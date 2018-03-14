@@ -19,3 +19,14 @@ placeholder{
 	padding:10px;
 	max-width: 500px;
 }
+
+
+.tempdivhover{
+	border-style: solid;
+    border-width: 10px;
+	margin-top:5px;
+	margin-bottom: 5px;
+	padding:10px;
+	max-width: 500px;
+	font-weight: bold;
+}
