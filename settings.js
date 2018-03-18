@@ -37,19 +37,53 @@ function check(){
 }
 
 function checkentercp(){
-	document.getElementById('enterbutton1').addEventListener('click',entercp)
+	document.getElementById('enterbutton1').addEventListener('click',cpgetkeyvals)
 }
 
 function checkentercb(){
 	document.getElementById('enterbutton2').addEventListener('click',entercb)
 }
 
-function entercp(){
+function getkeyvals(callback){
+	var keyvals = [];
+	chrome.storage.sync.get(['keys'],function(items){
+		if(!chrome.runtime.error){
+			keyvals = items;
+			callback(keyvals);
+		};
+	});
+}
+
+function cpgetkeyvals(){
+	getkeyvals(entercp)
+}
+
+function entercp(vals){
+	console.log(vals);
+	var keys = vals.keys
+	console.log(keys)
+	var len = keys.length
+	len = len - 1
+	var lastkey = keys[len]
+	console.log(lastkey)
+	var keyid = lastkey[0]
+	console.log(keyid)
+	var keyidnum = Number(keyid[2])
+	var nextidnum = keyidnum+1
+	console.log(keyidnum)
+	var newkeyid = keyid[0]+ keyid[1]+ nextidnum
 	var pub = document.getElementById('pub_key').value
 	var priv = document.getElementById('priv_key').value
+	var newkey = [newkeyid,pub,priv]
+	keys.push(newkey)
+	//var pub = document.getElementById('pub_key').value
+	//var priv = document.getElementById('priv_key').value
 	if (pub.length != 0 && priv.length != 0){
-		document.getElementById('demo').innerHTML = pub + priv
-		chrome.storage.sync.set({'pub_cp':pub,'priv_cp':priv});
+		document.getElementById('demo').innerHTML = keys
+		console.log(keys)
+		chrome.storage.sync.set({'keys':keys});
+		//['cp1',pub,priv],['cp2',pub,priv]
+		//chrome.storage.sync.set({'pub_cp':pub,'priv_cp':priv});
 	} 
 }
 
