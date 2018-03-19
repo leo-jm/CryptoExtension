@@ -143,10 +143,10 @@ function sortkeyvals(val){
 		console.log(val[i])
 		key = val[i]
 		if (key[0] == 'cp1'){
-			var name = key[0]
+			var keyname = key[0]
 			var pub = key[1]
 			var priv = key[2]
-			walletdata(pub,priv)
+			walletdata(pub,priv,keyname)
 		}else{
 			var test = document.getElementById('test').innerHTML
 			test += key
@@ -194,24 +194,24 @@ function resetpages(){
 	getpagevals(load)
 }
 
-function hmac(call,priv,pub){
+function hmac(call,priv,keyname){
 	// Creating Sha512 HMAC signature Credit: https://github.com/Caligatio/jsSHA Uses the files in src-sha folder
 	console.log('test')
 	var shaObj = new jsSHA("SHA-512", "TEXT");
 	shaObj.setHMACKey(priv, "TEXT");
 	shaObj.update(call);
 	var hmac = shaObj.getHMAC("HEX");
-	getwalletinfo(call,hmac,priv,pub)
+	getwalletinfo(call,hmac,keyname)
 }
 
-function walletdata(pub,priv){
+function walletdata(pub,priv,keyname){
 	// creates the API call for fetching wallet data and balances
 	var call = 'version=1&cmd=balances&key='
 	call = call.concat(pub)
-	hmac(call,priv)
+	hmac(call,priv,keyname)
 }
 
-function getwalletinfo(call,hmac,priv,pub) {
+function getwalletinfo(call,hmac,keyname) {
 	//Makes api call using an HTTP POST call
 	//Parses through call result and creates a div of the data to be displayed
 	var xhttp = new XMLHttpRequest();
@@ -228,8 +228,8 @@ function getwalletinfo(call,hmac,priv,pub) {
 			var balance = coindetails.balancef
 			var id = 'tempdiv'
 			id = id.concat(i+1)
-			var temp = new tempwalletinfo('CoinPayments',coinname[i],balance,id,'tempdiv',priv,pub)
-			temp.creatediv(balance,priv,pub)
+			var temp = new tempwalletinfo('CoinPayments',coinname[i],balance,id,'tempdiv',keyname)
+			temp.creatediv(balance,keyname)
 			}
 	}
 	};
@@ -251,19 +251,23 @@ function unhover(){
 }
 
 function chosen(){
-    console.log('test')
-	return true 
+    console.log(this)
+	var keyname = this.getElementsByClassName('keyname')
+	keyname = keyname[0]
+	keyname = keyname.innerHTML
+	console.log(keyname)
+	setuptransfercall(keyname)
 }
 
-function tempwalletinfo(title,coinname,balance,id,divclass,privid,pubid){
+function tempwalletinfo(title,coinname,balance,id,divclass,keyname){
 	this.title = title;
 	this.coinname =coinname;
 	this.balance = balance;
 	this.id = id;
 	this.divclass = divclass;
-    this.priv = privid;
-    this.pub = pubid;
-	this.creatediv = function(balance,priv,pubid) {
+    this.keyname = keyname;
+	console.log(name)
+	this.creatediv = function(balance,keyname) {
 		var p1 = document.createElement("p");
 		var divtitle = document.createTextNode(title);
 		p1.appendChild(divtitle);
@@ -273,6 +277,11 @@ function tempwalletinfo(title,coinname,balance,id,divclass,privid,pubid){
 		var p3 = document.createElement("p");
 		var balance = document.createTextNode(balance);
 		p3.appendChild(balance);
+		var p4 = document.createElement("p");
+		var keyname = document.createTextNode(keyname);
+		p4.appendChild(keyname)
+		p4.setAttribute('class','keyname')
+		p4.setAttribute('style','display:none')
         /*
         var button = document.createElement('button');
         var buttonid = id.concat('button')
@@ -284,6 +293,7 @@ function tempwalletinfo(title,coinname,balance,id,divclass,privid,pubid){
 		newdiv.appendChild(p1);
 		newdiv.appendChild(p2);
 		newdiv.appendChild(p3);
+		newdiv.appendChild(p4);
         //newdiv.appendChild(button)
 		newdiv.setAttribute('id',id);
 		newdiv.setAttribute('class',divclass);
@@ -293,6 +303,20 @@ function tempwalletinfo(title,coinname,balance,id,divclass,privid,pubid){
         newdiv.onmouseout = unhover;
         newdiv.onclick = chosen;
 	};
+}
+
+function setuptransfercall(keyname){
+	var keysort = function (val){
+		val = val.keys
+		keylist = []
+		for (i = 0; i < val.length; i++){
+		console.log(val[i])
+		key = val[i]
+		keylist.push(key)
+	}
+		return keylist
+	}
+	getkeyvals(keysort)
 }
 
 //Initial Function called
