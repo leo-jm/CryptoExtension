@@ -20,7 +20,7 @@ function checkbuttons(){
 	console.log(page3class)
 	if (page4class == 'open'){
 	    checkcancelpage4()
-		//getcalldata(checktransfercall)
+		getcalldata(checktransfercall)
 	}else{
 	if (page3class == 'open'){
 		console.log('test3')
@@ -182,6 +182,13 @@ function load(val){
 		getkeyvals(sortkeyvals)
 	}
 	checkbuttons()
+	/*
+	if (page4class == 'open){
+		
+	}
+	else{
+		checkbuttons()
+	}*/
 	}
 }
 
@@ -393,7 +400,7 @@ function setuptransfercall(pub,priv,address,amount,coin){
 
 function getcalldata(callback){
 	var calldata = [];
-	chrome.storage.sync.get(['calldata'],function(items){
+	chrome.storage.sync.get(['calldata','page4class'],function(items){
 		if(!chrome.runtime.error){
 			calldata = items;
 			callback(calldata);
@@ -402,14 +409,69 @@ function getcalldata(callback){
 }
 
 function checktransfercall(calldata){
+	console.log(calldata)
+	var page4class = calldata.page4class
+	calldata = calldata.calldata
 	var pub = calldata[0]
 	var priv = calldata[1]
 	var address = calldata[2]
 	var amount = calldata[3]
 	var coin = calldata[4]
-	document.getElementById('demo').innerHTML = pub + priv + address + amount + coin
-	page4()
+	document.getElementById('confirm').innerHTML ='<br>You are about to send ' + amount +' '+ coin + ' to ' + address 
+	if (page4class == 'closed'){
+		page4()
+	}else{
+		document.getElementById('enterbutton3').addEventListener('click',confirmed)
+	}
 }
+
+function confirmed(){
+	getcalldata(parsecalldata)
+}
+
+function parsecalldata(calldata){
+		calldata = calldata.calldata
+		var pub = calldata[0]
+		var priv = calldata[1]
+		var address = calldata[2]
+		var amount = calldata[3]
+		var coin = calldata[4]
+		buildcall(pub,address,amount,coin,priv)
+}
+
+function buildcall(pub,address,amount,coin,priv){
+		var call = 'cmd=create_withdrawal&amount='+amount+'&currency='+coin+'&address='+address
+		console.log(call)
+		transferhmac(call,priv)
+}
+	
+function transferhmac(call,priv){
+		var shaObj = new jsSHA("SHA-512", "TEXT");
+		shaObj.setHMACKey(priv, "TEXT");
+		shaObj.update(call);
+		var hmac = shaObj.getHMAC("HEX");
+		console.log(call)
+		console.log(hmac)
+}
+
+function makecall(call,hmac){
+	var xhttp = new XMLHttpRequest();
+	var HMAC = hmac;
+	var params = call
+	xhttp.onreadystatechange = function() {
+	if (this.readyState == 4 && this.status == 200) {
+		var responseObj = JSON.parse(this.responseText);
+		var result = responseObj.result
+		var transferstatus = result['status']
+	}
+	};
+	xhttp.open("POST", "https://www.coinpayments.net/api.php", true);
+	xhttp.setRequestHeader('HMAC',HMAC);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(params);
+}
+
+
 
 //Initial Function called
 
