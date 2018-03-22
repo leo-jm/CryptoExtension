@@ -1,4 +1,4 @@
-body,input,.tempdiv,.tempdivhover,.cancelbutton,.topbar,.botbar,.enterbutton,#confirm{
+body,input,select,.tempdiv,.tempdivhover,.cancelbutton,.topbar,.botbar,.enterbutton,.bardata,.pagedata,#confirm,#transactioninfo{
 	font-family:Tahoma,Sans-serif;
 }
 
