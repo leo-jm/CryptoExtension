@@ -1,4 +1,4 @@
-body,input,.tempdiv,.tempdivhover,.cancelbutton,.topbar,.enterbutton,#confirm{
+body,input,.tempdiv,.tempdivhover,.cancelbutton,.topbar,.botbar,.enterbutton,#confirm{
 	font-family:Tahoma,Sans-serif;
 }
 
@@ -8,10 +8,6 @@ body {
 	  background-color:#e8e9ea;
 	  font-size:15px;
       }
-	
-placeholder{
-	color:#7f8184;
-	}
 
 input{
 	margin-top:5px;
@@ -22,14 +18,27 @@ select{
 	cursor:pointer;
 }
 	
+li{
+	float:right;
+	margin-right: 8%;
+    margin-top: 8px;
+}
+
+ul {
+    list-style-type: none;
+    overflow: hidden;
+}
+	
 .tempdiv{
 	border-style: solid;
 	margin-top:5px;
 	margin-bottom: 5px;
-	padding:10px;
+	padding:5px;
 	max-width: 500px;
 	background-color:#a3aeb7;
 	text-align:center;
+	height:115px;
+	font-size:15px;
 }
 
 
@@ -37,22 +46,25 @@ select{
 	border-style: solid;
 	margin-top:5px;
 	margin-bottom: 5px;
-	padding:10px;
+	padding:5px;
 	max-width: 500px;
 	font-weight: bold;
 	background-color:#9cb8ce;
 	text-align:center;
+	height:115px;
+	font-size:15px;
 }
 
 .cancelbutton{
-	float:right;
+	position: absolute;
+    left: 340px;
 }
 
 .enterbutton,.cancelbutton{
 	font-size:15px;
 	text-align:center;
 	color:white;
-	background-color:#13597a;
+	background-color:#0b84e0;
 	border:none;
 	cursor:pointer;
 	margin:5px;
@@ -60,17 +72,71 @@ select{
 
 
 .topbar {
-    font-size: 20px;
+    font-size: 18px;
 	font-weight:bold;
-	padding: 10px 0px 10px 0px;
+    padding: 20px 10px 10px 10px;
 	text-align:center;
 	background-color:#0b84e0;
 	margin:0px 0px 5px 0px;
-	width:100%;
+	min-width:400px;
+    height:80px;
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+}
+
+.botbar{
+    font-size: 20px;
+	font-weight:bold;
+	/*padding: 5px 5px 5px 5px;*/
+	text-align:center;
+	background-color:#0b84e0;
+	/*margin:5px 0px 0px 0px;*/
+	min-width:400px;
+    height:40px;
+    position: absolute;
+    bottom:0;
+    left:0;
+    right:0;
+	top: 88%;
+}
+
+.botbarsettings{
+	background-color:#0b84e0;
+	min-width:400px;
+    height:40px;
+    position: absolute;
+    bottom:0;
+    left:0;
+    right:0;
+	top: 95%;
+}
+
+.pagedata{
+	
+    position:absolute;
+    top:120px;
+	width:95%;
+}
+
+.bardata{
+    top: 10%;
+    bottom: 10%;
+	left: 3px;
+    right: 4px;
+    position: absolute;
+	text-align:center;
+}
+
+#transactioninfo{
+	font-size:14px;
+	text-align:center;
 }
 
 #confirm{
 	max-width: 300px;
 	word-wrap:normal;
 	font-size:15px;
+	margin-top:0px;
 }

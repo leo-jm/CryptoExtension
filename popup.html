@@ -6,36 +6,66 @@
 	</head>
 	<body id = 'mainpage'>
 		<div id="page1" style="display:block;" class = "open">
-			<h1 class = 'topbar'>Enter your address</h1>
-			Address: <input type="text" id="address" placeholder="Enter address" style='color:#000000;display:block'>
-			<button id='enterbutton1' class = 'enterbutton'>Enter</button>
+			<div class = 'topbar'>
+                <p class = 'bardata'>Step 1: Enter your address</p>
+            </div>
+            <div class = 'pagedata'>
+			     Address: <input type="text" id="address" placeholder="Enter address" style='color:#000000;display:block'>
+			     <button id='enterbutton1' class = 'enterbutton'>Enter</button>
+            </div>
+            <ul class = 'botbar'>
+                <li class = 'optionsbutton'><img src = 'options.png' style='height:25px;width:25px;'></img></li>
+            </ul>
 		</div>
 		<div id = "page2" style = "display:none;" class = "closed">
-			<h1 class = 'topbar'>Enter the amount to send in the selected coin</h1>
+			<div class = 'topbar'>
+                <p class = 'bardata'>Step 2: Enter the amount to send in the selected coin </p>
+            </div>
 			<button id = 'cancelpage2' class = 'cancelbutton'>Cancel</button>
-			Amount: <input type ="number" id="amount" placeholder ="Enter amount to send" style='color:#000000;display:block'>
-			Choose coin: 
-			<select id='coin'>
-				<option value = 'BTC'>Bitcoin</option>
-				<option value = 'ETH'>Ethereum</option>
-				<option value = 'LTC'>Litecoin</option>
-			</select>
-			<br>
-			<button id='enterbutton2' class = 'enterbutton'>Enter</button>
+            <div class = 'pagedata'>
+                Amount: <input type ="number" id="amount" placeholder ="Enter amount to send" style='color:#000000;display:block'>
+                Choose coin: 
+                <select id='coin'>
+                    <option value = 'BTC'>Bitcoin</option>
+                    <option value = 'ETH'>Ethereum</option>
+                    <option value = 'LTC'>Litecoin</option>
+                </select>
+                <br>
+                <button id='enterbutton2' class = 'enterbutton'>Enter</button>
+            </div>
+            <ul class = 'botbar'>
+                <li class = 'optionsbutton'><img src = 'options.png' style='height:25px;width:25px;'></img></li>
+            </ul>
 		</div>
 		<div id = "page3" style = "display:none;" class = "closed">
 			<div id = 'infobar' class = 'topbar'>
-				<button id = 'cancelpage3' class = 'cancelbutton'>Cancel</button>
-				<p id = 'transactioninfo'></p>
-				<p id = 'test'></p>
+                <div class = 'bardata'>
+				Step 3: Choose a wallet
+				<p id = 'transactioninfo' class = 'bardata'></p>
+				<p id = 'test' style = 'display:none;'></p>
+				</div>
 			</div>
+			<button id = 'cancelpage3' class = 'cancelbutton'>Cancel</button>
+			<div id = 'tempdivpage3' class = 'pagedata'></div>
+            <ul class = 'botbar'>
+                <li class = 'optionsbutton'><img src = 'options.png' style='height:25px;width:25px;'></img></li>
+            </ul>
 		</div>
         <div id = 'page4' style = 'display:none;' class = 'closed'>
-			<h1 class = 'topbar'>Confirm the transaction</h1>
-            <button id = 'cancelpage4' class = 'cancelbutton'>Cancel</button>
+            <div style = 'display:block;'>
+			<div class = 'topbar'>
+                <p class = 'bardata'>Step 4: Confirm the transaction</p>
+            </div>
+			<button id = 'cancelpage4' class = 'cancelbutton'>Cancel</button>
+			<div class = 'pagedata'>
             <p id = 'confirm'></p>
-			<button id='enterbutton3' class = 'enterbutton'>Enter</button>
-        </div>
+			<button id='enterbutton3' class = 'enterbutton'>Confirm</button>
+            </div>
+			</div>
+            <ul class = 'botbar'>
+                <li class = 'optionsbutton'><img src = 'options.png' style='height:25px;width:25px;'></img></li>
+            </ul>
+			</div>
 		<script src="popup.js"></script>
 		<script type="text/javascript" src="src_sha\sha.js"></script>
 	</body>

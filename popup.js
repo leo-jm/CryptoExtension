@@ -176,7 +176,7 @@ function load(val){
 	page2.className = page2class
 	page3.className = page3class
     page4.className = page4class
-	var transactioninfo = 'Address: &nbsp;'+address + '<br/>' +"Amount: &nbsp;"+amount+' &nbsp;&nbsp;&nbsp;&nbsp;'+"Coin: &nbsp;"+coin
+	var transactioninfo = 'Address: <br>'+address + '<br/>' +"Amount: &nbsp;"+amount+'<br>'+"Coin: &nbsp;"+coin
 	document.getElementById("transactioninfo").innerHTML = transactioninfo;
 	if (page3class == 'open'){
 		getkeyvals(sortkeyvals)
@@ -249,7 +249,7 @@ function checkcancelpage4(){
 
 function resetpages(){
 	//Sets the page data and transaction datat back to default
-	var element1 = document.getElementById('page3')
+	var element1 = document.getElementById('tempdivpage3')
 	var element2 = document.getElementsByClassName('tempdiv')
 	for (var i = 0; i < element2.length; i++){
 			element1.removeChild(element2[i])
@@ -383,7 +383,7 @@ function tempwalletinfo(title,coinname,balance,id,divclass,keyname){
         //newdiv.appendChild(button)
 		newdiv.setAttribute('id',id);
 		newdiv.setAttribute('class',divclass);
-		var page3 = document.getElementById('page3');
+		var page3 = document.getElementById('tempdivpage3');
 		page3.appendChild(newdiv);
         newdiv.onmouseover = hover;
         newdiv.onmouseout = unhover;
@@ -471,8 +471,17 @@ function makecall(call,hmac){
 	xhttp.send(params);
 }
 
-
+function options(){
+	var options = document.getElementsByClassName('optionsbutton');
+	for(i = 0; i < options.length; i++){
+		options[i].onclick = function() {
+			var settingspage = chrome.runtime.getURL('settings.html')
+			var createProperties = {url:settingspage}
+			chrome.tabs.create(createProperties)
+		}
+	}
+}
 
 //Initial Function called
-
+options()
 checkload()
