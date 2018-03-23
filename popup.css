@@ -140,3 +140,8 @@ ul {
 	font-size:15px;
 	margin-top:0px;
 }
+
+#tempdivpage3{
+	height:350px;
+	overflow-y:scroll;
+}

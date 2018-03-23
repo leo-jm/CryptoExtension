@@ -182,18 +182,12 @@ function load(val){
 		getkeyvals(sortkeyvals)
 	}
 	checkbuttons()
-	/*
-	if (page4class == 'open){
-		
-	}
-	else{
-		checkbuttons()
-	}*/
 	}
 }
 
 function sortkeyvals(val){
 	console.log(val.keys)
+	var coin = val.coin
 	val = val.keys
 	for (i = 0; i < val.length; i++){
 		console.log(val[i])
@@ -202,7 +196,7 @@ function sortkeyvals(val){
 			var keyname = key[0]
 			var pub = key[1]
 			var priv = key[2]
-			walletdata(pub,priv,keyname)
+			walletdata(pub,priv,keyname,coin)
 		}else{
 			var test = document.getElementById('test').innerHTML
 			test += key
@@ -258,24 +252,24 @@ function resetpages(){
 	getpagevals(load)
 }
 
-function hmac(call,priv,keyname){
+function hmac(call,priv,keyname,coin){
 	// Creating Sha512 HMAC signature Credit: https://github.com/Caligatio/jsSHA Uses the files in src-sha folder
 	console.log('test')
 	var shaObj = new jsSHA("SHA-512", "TEXT");
 	shaObj.setHMACKey(priv, "TEXT");
 	shaObj.update(call);
 	var hmac = shaObj.getHMAC("HEX");
-	getwalletinfo(call,hmac,keyname)
+	getwalletinfo(call,hmac,keyname,coin)
 }
 
-function walletdata(pub,priv,keyname){
+function walletdata(pub,priv,keyname,coin){
 	// creates the API call for fetching wallet data and balances
 	var call = 'version=1&cmd=balances&key='
 	call = call.concat(pub)
-	hmac(call,priv,keyname)
+	hmac(call,priv,keyname,coin)
 }
 
-function getwalletinfo(call,hmac,keyname) {
+function getwalletinfo(call,hmac,keyname,coin) {
 	//Makes api call using an HTTP POST call
 	//Parses through call result and creates a div of the data to be displayed
 	var xhttp = new XMLHttpRequest();
@@ -288,12 +282,14 @@ function getwalletinfo(call,hmac,keyname) {
 		for (i = 0, len = coinname.length; i < len; i++){
 			var result = responseObj.result
 			var key = coinname[i]
-			var coindetails = result[key]
-			var balance = coindetails.balancef
-			var id = 'tempdiv'
-			id = id.concat(i+1)
-			var temp = new tempwalletinfo('CoinPayments',coinname[i],balance,id,'tempdiv',keyname)
-			temp.creatediv(balance,keyname)
+			if (key == coin){
+				var coindetails = result[key]
+				var balance = coindetails.balancef
+				var id = 'tempdiv'
+				id = id.concat(i+1)
+				var temp = new tempwalletinfo('CoinPayments',coinname[i],balance,id,'tempdiv',keyname)
+				temp.creatediv(balance,keyname)
+				}
 			}
 	}
 	};
@@ -312,37 +308,6 @@ function hover(){
 function unhover(){
 	//changej css for when the temp div is unhovered
     this.className = 'tempdiv'
-}
-
-function chosen(){
-    console.log(this)
-	var keyname = this.getElementsByClassName('keyname')
-	keyname = keyname[0]
-	keyname = keyname.innerHTML
-    console.log(keyname)
-    chrome.storage.sync.set({'keyname':keyname});
-    var keysort = function (val){
-        console.log(val)
-		var keys = val.keys
-        var keyname = val.keyname
-        var amount = val.amount
-        var address = val.address
-        var coin = val.coin
-        console.log(keyname)
-		keylist = []
-		for (i = 0; i < keys.length; i++){
-            var key = keys[i]
-            console.log(key)
-            console.log(keyname)
-            if (key[0] == keyname){
-                var pub = key[1]
-                var priv = key[2]
-              setuptransfercall(pub,priv,address,amount,coin)  
-        }
-	}
-		
-	}
-	getkeyvals(keysort)
 }
 
 function tempwalletinfo(title,coinname,balance,id,divclass,keyname){
@@ -389,6 +354,37 @@ function tempwalletinfo(title,coinname,balance,id,divclass,keyname){
         newdiv.onmouseout = unhover;
         newdiv.onclick = chosen;
 	};
+}
+
+function chosen(){
+    console.log(this)
+	var keyname = this.getElementsByClassName('keyname')
+	keyname = keyname[0]
+	keyname = keyname.innerHTML
+    console.log(keyname)
+    chrome.storage.sync.set({'keyname':keyname});
+    var keysort = function (val){
+        console.log(val)
+		var keys = val.keys
+        var keyname = val.keyname
+        var amount = val.amount
+        var address = val.address
+        var coin = val.coin
+        console.log(keyname)
+		keylist = []
+		for (i = 0; i < keys.length; i++){
+            var key = keys[i]
+            console.log(key)
+            console.log(keyname)
+            if (key[0] == keyname){
+                var pub = key[1]
+                var priv = key[2]
+              setuptransfercall(pub,priv,address,amount,coin)  
+        }
+	}
+		
+	}
+	getkeyvals(keysort)
 }
 
 function setuptransfercall(pub,priv,address,amount,coin){
@@ -458,7 +454,6 @@ function parsecalldata(calldata){
 
 function buildcall(pub,address,amount,coin,priv){
 		var call = 'cmd=create_withdrawal&amount='+amount+'&currency='+coin+'&address='+address
-		console.log(call)
 		transferhmac(call,priv)
 }
 	
@@ -470,7 +465,9 @@ function transferhmac(call,priv){
 		console.log(call)
 		console.log(hmac)
         chrome.storage.sync.set({'transfercalled':true,'page4part':'3'});
-        page4pt3()
+		document.getElementById('waiting').innerHTML = 'Waiting for server response...'
+        //page4pt3()
+		
 }
 
 function makecall(call,hmac){
@@ -480,10 +477,21 @@ function makecall(call,hmac){
 	xhttp.onreadystatechange = function() {
 	if (this.readyState == 4 && this.status == 200) {
 		var responseObj = JSON.parse(this.responseText);
-        var error = resopnseObj.error
+		console.log(responseObj)
+        var error = respopnseObj.error
         if (error == 'ok'){
 		  var result = responseObj.result
 		  var transferstatus = result['status']
+		  console.log(transferstatus)
+		  if (transferstatus == '0' || transferstatus == '1.0'){
+			 chrome.storage.sync.set({'page4part':'2'}); 
+			 page4pt2()
+		  }else{
+			  if (transferstatus == '1'){
+				chrome.storage.sync.set({'page4part':'3'}); 
+				page4pt3() 
+			  }
+		  }
           }
         
 	}
