@@ -254,7 +254,7 @@ function resetpages(){
 	for (var i = 0; i < element2.length; i++){
 			element1.removeChild(element2[i])
 	}
-    chrome.storage.sync.set({'page1':'block','page2':'none','page3':'none','page4':'none','address':'','amount':'', 'page1class':'open','page2class':'closed','page3class':'closed','page4class':'closed'});
+    chrome.storage.sync.set({'page1':'block','page2':'none','page3':'none','page4':'none','address':'','amount':'', 'page1class':'open','page2class':'closed','page3class':'closed','page4class':'closed','transfercalled':false,'page4part':'1'});
 	getpagevals(load)
 }
 
@@ -400,9 +400,10 @@ function setuptransfercall(pub,priv,address,amount,coin){
 
 function getcalldata(callback){
 	var calldata = [];
-	chrome.storage.sync.get(['calldata','page4class'],function(items){
+	chrome.storage.sync.get(['calldata','page4class','transfercalled','page4part'],function(items){
 		if(!chrome.runtime.error){
 			calldata = items;
+            console.log(calldata)
 			callback(calldata);
 		};
 	});
@@ -411,6 +412,7 @@ function getcalldata(callback){
 function checktransfercall(calldata){
 	console.log(calldata)
 	var page4class = calldata.page4class
+    var page4part = calldata.page4part
 	calldata = calldata.calldata
 	var pub = calldata[0]
 	var priv = calldata[1]
@@ -421,7 +423,18 @@ function checktransfercall(calldata){
 	if (page4class == 'closed'){
 		page4()
 	}else{
-		document.getElementById('enterbutton3').addEventListener('click',confirmed)
+        if (page4part == '1'){
+          page4pt1()
+		  document.getElementById('enterbutton3').addEventListener('click',confirmed)
+        }else{
+            if(page4part == '2'){
+                page4pt2()
+            }else {
+                if(page4part == '3'){
+                    page4pt3()
+                }
+            }
+        }
 	}
 }
 
@@ -430,13 +443,17 @@ function confirmed(){
 }
 
 function parsecalldata(calldata){
+		var transfercalled = calldata.transfercalled
+		console.log(calldata)
 		calldata = calldata.calldata
 		var pub = calldata[0]
 		var priv = calldata[1]
 		var address = calldata[2]
 		var amount = calldata[3]
 		var coin = calldata[4]
-		buildcall(pub,address,amount,coin,priv)
+		if (!transfercalled){
+			buildcall(pub,address,amount,coin,priv)
+		}
 }
 
 function buildcall(pub,address,amount,coin,priv){
@@ -452,6 +469,8 @@ function transferhmac(call,priv){
 		var hmac = shaObj.getHMAC("HEX");
 		console.log(call)
 		console.log(hmac)
+        chrome.storage.sync.set({'transfercalled':true,'page4part':'3'});
+        page4pt3()
 }
 
 function makecall(call,hmac){
@@ -461,14 +480,19 @@ function makecall(call,hmac){
 	xhttp.onreadystatechange = function() {
 	if (this.readyState == 4 && this.status == 200) {
 		var responseObj = JSON.parse(this.responseText);
-		var result = responseObj.result
-		var transferstatus = result['status']
+        var error = resopnseObj.error
+        if (error == 'ok'){
+		  var result = responseObj.result
+		  var transferstatus = result['status']
+          }
+        
 	}
 	};
 	xhttp.open("POST", "https://www.coinpayments.net/api.php", true);
 	xhttp.setRequestHeader('HMAC',HMAC);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(params);
+	chrome.storage.sync.set({'transfercalled':true});
 }
 
 function options(){
@@ -480,6 +504,34 @@ function options(){
 			chrome.tabs.create(createProperties)
 		}
 	}
+}
+
+function page4pt1(){
+    var page4pt1 = document.getElementById('page4pt1')
+    var page4pt2 = document.getElementById('page4pt2')
+    var page4pt3 = document.getElementById('page4pt3')
+    page4pt1.style.display = 'block'
+    page4pt2.style.display = 'none'
+    page4pt3.style.display = 'none'  
+}
+
+function page4pt2(){
+    var page4pt1 = document.getElementById('page4pt1')
+    var page4pt2 = document.getElementById('page4pt2')
+    var page4pt3 = document.getElementById('page4pt3')
+    page4pt1.style.display = 'none'
+    page4pt2.style.display = 'block'
+    page4pt3.style.display = 'none'  
+}
+
+function page4pt3(){
+    var page4pt1 = document.getElementById('page4pt1')
+    var page4pt2 = document.getElementById('page4pt2')
+    var page4pt3 = document.getElementById('page4pt3')
+    page4pt1.style.display = 'none'
+    page4pt2.style.display = 'none'
+    page4pt3.style.display = 'block' 
+    document.getElementById('enterbutton4').addEventListener('click',resetpages)
 }
 
 //Initial Function called

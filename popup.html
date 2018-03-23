@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Getting Started Extension's Popup</title>
+		<title>CryptoExtension</title>
 		<link rel="stylesheet" type="text/css" href="popup.css">
 	</head>
 	<body id = 'mainpage'>
@@ -52,14 +52,21 @@
             </ul>
 		</div>
         <div id = 'page4' style = 'display:none;' class = 'closed'>
-            <div style = 'display:block;'>
-			<div class = 'topbar'>
+            <div class = 'topbar'>
                 <p class = 'bardata'>Step 4: Confirm the transaction</p>
             </div>
 			<button id = 'cancelpage4' class = 'cancelbutton'>Cancel</button>
 			<div class = 'pagedata'>
+            <div id = 'page4pt1' style = 'display:block;'>
             <p id = 'confirm'></p>
 			<button id='enterbutton3' class = 'enterbutton'>Confirm</button>
+            </div>
+            <div id = 'page4pt2' style = 'display:none;'>
+                Email confirmation needed
+            </div>
+            <div id = 'page4pt3' style = 'display:none;'> 
+                Transaction made                                
+                <button id = 'enterbutton4' class = 'enterbutton'>Ok</button>            
             </div>
 			</div>
             <ul class = 'botbar'>
