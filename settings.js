@@ -138,7 +138,7 @@ function sortkeys(vals){
 }
 
 function deletetempdivs(){
-	chrome.storage.sync.set({'removekey':['']});
+	chrome.storage.sync.set({'removekey':''});
 	var element1 = document.getElementById('managekeysdata')
 	var element2 = document.querySelectorAll('.tempdiv,.tempdivhover')
 	var length = element2.length
@@ -202,6 +202,7 @@ function toggle(){
 	}else{
 		if(currentclass == 'tempdivhover'){
 			this.className = 'tempdiv'
+			chrome.storage.sync.set({'removekey':''});
 	}
 	}
 }

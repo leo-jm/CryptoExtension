@@ -194,17 +194,12 @@ function sortkeyvals(val){
 	for (i = 0; i < val.length; i++){
 		console.log(val[i])
 		key = val[i]
-		//if (key[0] == 'cp1'){
 		var keyname = key[0]
-		var pub = key[1]
-		var priv = key[2]
-		walletdata(pub,priv,keyname,coin)
-		/*
-		}else{
-			var test = document.getElementById('test').innerHTML
-			test += key
-			document.getElementById('test').innerHTML = test;
-		}*/
+		if (keyname[0].concat(keyname[1] == 'cp')){
+			var pub = key[1]
+			var priv = key[2]
+			walletdata(pub,priv,keyname,coin)
+		}
 	}
 
 }
