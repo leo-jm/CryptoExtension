@@ -5,25 +5,39 @@
 		<link rel="stylesheet" type="text/css" href="popup.css">
 	</head>
 	<body id = 'mainpage'>
-		<div class = 'topbar'>Enter your API Keys</div>
-		<div class = 'pagedata'>
-        <p id = 'demo'></p>
-		<select id='wallet'>
-				<option value = 'coinpayments'>CoinPayments</option>
-				<option value = 'coinbase'>Coinbase</option>
-		</select>
-		<div id = 'coinpayments' style='display:block;' class = 'open'>
-			Public Key: <input type="text" id="pub_key" placeholder="Enter key" style='color:#000000;display:block'>
-			Private Key: <input type="text" id="priv_key" placeholder="Enter key" style='color:#000000;display:block'>
-			<button id='enterbutton1' class = 'enterbutton'>Enter</button>
+		<div id='enterkeys' style='display:block;'>
+			<div class = 'topbar'>Enter your API Keys</div>
+			<div class = 'pagedata'>
+			<p id = 'demo'></p>
+			<select id='wallet'>
+					<option value = 'coinpayments'>Coinpayments</option>
+					<option value = 'coinbase'>Coinbase</option>
+			</select>
+			<div id = 'coinpayments' style='display:block;' class = 'open'>
+				Public Key: <input type="text" id="pub_key" placeholder="Enter key" style='color:#000000;display:block'>
+				Private Key: <input type="text" id="priv_key" placeholder="Enter key" style='color:#000000;display:block'>
+				<button id='enterbutton1' class = 'enterbutton'>Enter</button>
+			</div>
+			<div id = 'coinbase' style='display:none;' class = 'closed'>
+				coinbase
+				<button id='enterbutton2' class = 'enterbutton'>Enter</button>
+			</div>
+			</div>
 		</div>
-		<div id = 'coinbase' style='display:none;' class = 'closed'>
-			coinbase
-			<button id='enterbutton2' class = 'enterbutton'>Enter</button>
+		<div id = 'managekeys' style='display:none;'>
+			<div class = 'topbar'>Manage your API Keys</div>
+			<div id= 'managekeysdata'class = 'pagedata'>
+				<p id = 'nokeys'></p>
+			</div>
+			<div id = 'selector'>
+				<p>Remove this API key?</p>
+				<button id = 'removebutton' class = 'enterbutton'>Remove</button>
+			</div>
 		</div>
-        </div>
-        <div class = 'botbarsettings'>   
-         </div>
+        <ul class = 'botbarsettings'>
+			<li id = 'managekeysbutton' class = 'buttonssettings'><p class = 'buttontext'>Manage<br>Keys</p></li>
+			<li id = 'enterkeysbutton' class = 'buttonssettings'><p class = 'buttontext'>Enter<br>Keys</p></li>
+        </ul>
 		<script src="settings.js"></script>
 	</body>
 </html>

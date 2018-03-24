@@ -91,6 +91,7 @@ function page3(){
 				var page2class = 'closed'
 				var page3class = 'open'
                 var page4class = 'closed'
+                getkeyvals(sortvalstxfee)
 			}
 		}
 		//Saving page and transaction data to storage
@@ -125,7 +126,7 @@ function page4(){
 function getpagevals(callback){
 	//Retrieve page and transaction data from storage
 	var pagevals = [];
-	chrome.storage.sync.get(['page1','page2','page3','page4','address','amount','coin','page1class','page2class','page3class','page4class'], function(items){
+	chrome.storage.sync.get(['page1','page2','page3','page4','address','amount','coin','txfee','page1class','page2class','page3class','page4class'], function(items){
 		if (!chrome.runtime.error) {
 			pagevals = items;
 			callback(pagevals);
@@ -135,7 +136,7 @@ function getpagevals(callback){
 
 function getkeyvals(callback){
 	var keyvals = [];
-	chrome.storage.sync.get(['keys','keyname','address','coin','amount'],function(items){
+	chrome.storage.sync.get(['keys','keyname','address','coin','amount','txfee'],function(items){
 		if(!chrome.runtime.error){
 			keyvals = items;
 			callback(keyvals);
@@ -168,6 +169,7 @@ function load(val){
     var address = val.address
 	var amount = val.amount
 	var coin = val.coin
+	var txfee = val.txfee
 	page1.style.display = page1val
 	page2.style.display = page2val
 	page3.style.display = page3val
@@ -176,7 +178,7 @@ function load(val){
 	page2.className = page2class
 	page3.className = page3class
     page4.className = page4class
-	var transactioninfo = 'Address: <br>'+address + '<br/>' +"Amount: &nbsp;"+amount+'<br>'+"Coin: &nbsp;"+coin
+	var transactioninfo = 'Address: <br>'+address + '<br/>' +"Amount: &nbsp;"+amount+' + '+txfee+'(fee)'+'<br>'+"Coin: &nbsp;"+coin
 	document.getElementById("transactioninfo").innerHTML = transactioninfo;
 	if (page3class == 'open'){
 		getkeyvals(sortkeyvals)
@@ -188,22 +190,78 @@ function load(val){
 function sortkeyvals(val){
 	console.log(val.keys)
 	var coin = val.coin
-	val = val.keys
+	var val = val.keys
 	for (i = 0; i < val.length; i++){
 		console.log(val[i])
 		key = val[i]
-		if (key[0] == 'cp1'){
-			var keyname = key[0]
-			var pub = key[1]
-			var priv = key[2]
-			walletdata(pub,priv,keyname,coin)
+		//if (key[0] == 'cp1'){
+		var keyname = key[0]
+		var pub = key[1]
+		var priv = key[2]
+		walletdata(pub,priv,keyname,coin)
+		/*
 		}else{
 			var test = document.getElementById('test').innerHTML
 			test += key
 			document.getElementById('test').innerHTML = test;
-		}
+		}*/
 	}
 
+}
+
+function sortvalstxfee(val){
+	var coin = val.coin
+	var val = val.keys
+		for (i = 0; i < val.length; i++){
+			console.log(val[i])
+			key = val[i]
+			if (key[0] == 'cp1'){
+				var keyname = key[0]
+				var pub = key[1]
+				var priv = key[2]
+				buildtxfeecall(pub,priv,coin)
+		}
+	}
+}
+
+function buildtxfeecall(pub,priv,coin){
+	var call = 'version=1&key='+pub+'&cmd=rates'
+	txfeehmac(call,priv,coin)
+}
+
+function txfeehmac(call,priv,coin){
+	// Creating Sha512 HMAC signature Credit: https://github.com/Caligatio/jsSHA Uses the files in src-sha folder
+	var shaObj = new jsSHA("SHA-512", "TEXT");
+	shaObj.setHMACKey(priv, "TEXT");
+	shaObj.update(call);
+	var hmac = shaObj.getHMAC("HEX");
+	gettxfee(call,hmac,coin)
+}
+
+function gettxfee(call,hmac,coin){
+	var xhttp = new XMLHttpRequest();
+	var HMAC = hmac;
+	var params = call
+	xhttp.onreadystatechange = function() {
+	if (this.readyState == 4 && this.status == 200) {
+		var responseObj = JSON.parse(this.responseText);
+		var coinname = Object.keys(responseObj.result);
+		responseObj = responseObj.result
+		console.log(responseObj)
+		for (i=0;i<coinname.length;i++){
+			var key = coinname[i]
+			if (key == coin){
+				var keyObj = responseObj[key]
+				var txfee = keyObj['tx_fee']
+				chrome.storage.sync.set({'txfee':txfee});
+			}
+			}
+		}
+	};
+	xhttp.open("POST", "https://www.coinpayments.net/api.php", true);
+	xhttp.setRequestHeader('HMAC',HMAC);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(params);
 }
 
 function checkbuttonpress1(){
@@ -245,14 +303,17 @@ function resetpages(){
 	//Sets the page data and transaction datat back to default
 	var element1 = document.getElementById('tempdivpage3')
 	var element2 = document.getElementsByClassName('tempdiv')
-	for (var i = 0; i < element2.length; i++){
-			element1.removeChild(element2[i])
+	var length = element2.length
+	for (var i = length - 1; i >= 0; i--){
+		element1.removeChild(element2[i])
 	}
     chrome.storage.sync.set({'page1':'block','page2':'none','page3':'none','page4':'none','address':'','amount':'', 'page1class':'open','page2class':'closed','page3class':'closed','page4class':'closed','transfercalled':false,'page4part':'1'});
 	getpagevals(load)
 }
 
-function hmac(call,priv,keyname,coin){
+
+
+function datahmac(call,priv,keyname,coin){
 	// Creating Sha512 HMAC signature Credit: https://github.com/Caligatio/jsSHA Uses the files in src-sha folder
 	console.log('test')
 	var shaObj = new jsSHA("SHA-512", "TEXT");
@@ -266,7 +327,7 @@ function walletdata(pub,priv,keyname,coin){
 	// creates the API call for fetching wallet data and balances
 	var call = 'version=1&cmd=balances&key='
 	call = call.concat(pub)
-	hmac(call,priv,keyname,coin)
+	datahmac(call,priv,keyname,coin)
 }
 
 function getwalletinfo(call,hmac,keyname,coin) {
@@ -333,19 +394,11 @@ function tempwalletinfo(title,coinname,balance,id,divclass,keyname){
 		p4.appendChild(keyname)
 		p4.setAttribute('class','keyname')
 		p4.setAttribute('style','display:none')
-        /*
-        var button = document.createElement('button');
-        var buttonid = id.concat('button')
-        var buttonwords = document.createTextNode('test')
-        button.appendChild(buttonwords)
-        button.setAttribute('id',buttonid)
-        */
 		var newdiv = document.createElement('div');
 		newdiv.appendChild(p1);
 		newdiv.appendChild(p2);
 		newdiv.appendChild(p3);
 		newdiv.appendChild(p4);
-        //newdiv.appendChild(button)
 		newdiv.setAttribute('id',id);
 		newdiv.setAttribute('class',divclass);
 		var page3 = document.getElementById('tempdivpage3');
@@ -370,8 +423,8 @@ function chosen(){
         var amount = val.amount
         var address = val.address
         var coin = val.coin
+        var txfee = val.txfee
         console.log(keyname)
-		keylist = []
 		for (i = 0; i < keys.length; i++){
             var key = keys[i]
             console.log(key)
@@ -379,7 +432,7 @@ function chosen(){
             if (key[0] == keyname){
                 var pub = key[1]
                 var priv = key[2]
-              setuptransfercall(pub,priv,address,amount,coin)  
+              setuptransfercall(pub,priv,address,amount,coin,txfee)  
         }
 	}
 		
@@ -387,9 +440,9 @@ function chosen(){
 	getkeyvals(keysort)
 }
 
-function setuptransfercall(pub,priv,address,amount,coin){
+function setuptransfercall(pub,priv,address,amount,coin,txfee){
     var temp = pub + priv + address + amount + coin
-	chrome.storage.sync.set({'calldata':[pub,priv,address,amount,coin]});
+	chrome.storage.sync.set({'calldata':[pub,priv,address,amount,coin,txfee]});
     console.log(temp)
 	getcalldata(checktransfercall)
 }
@@ -415,7 +468,9 @@ function checktransfercall(calldata){
 	var address = calldata[2]
 	var amount = calldata[3]
 	var coin = calldata[4]
-	document.getElementById('confirm').innerHTML ='<br>You are about to send ' + amount +' '+ coin + ' to ' + address 
+	var txfee = calldata[5]
+	var fullamount = Number(amount)+Number(txfee)
+	document.getElementById('confirm').innerHTML ='<br>You are about to send ' + fullamount+', ' +amount + ' + '+ txfee+'(fee) '+ coin + ' to ' + address 
 	if (page4class == 'closed'){
 		page4()
 	}else{
@@ -447,13 +502,15 @@ function parsecalldata(calldata){
 		var address = calldata[2]
 		var amount = calldata[3]
 		var coin = calldata[4]
+		var txfee = calldata[5]
+		var fullamount = Number(amount) + Number(txfee)
 		if (!transfercalled){
-			buildcall(pub,address,amount,coin,priv)
+			buildcall(pub,address,fullamount,coin,priv)
 		}
 }
 
 function buildcall(pub,address,amount,coin,priv){
-		var call = 'cmd=create_withdrawal&amount='+amount+'&currency='+coin+'&address='+address
+		var call = 'version=1&key='+pub+'&cmd=create_withdrawal&amount='+amount+'&currency='+coin+'&address='+address
 		transferhmac(call,priv)
 }
 	
@@ -462,11 +519,9 @@ function transferhmac(call,priv){
 		shaObj.setHMACKey(priv, "TEXT");
 		shaObj.update(call);
 		var hmac = shaObj.getHMAC("HEX");
-		console.log(call)
-		console.log(hmac)
-        chrome.storage.sync.set({'transfercalled':true,'page4part':'3'});
+		makecall(call,hmac)
+        chrome.storage.sync.set({'transfercalled':true});
 		document.getElementById('waiting').innerHTML = 'Waiting for server response...'
-        //page4pt3()
 		
 }
 
@@ -478,9 +533,11 @@ function makecall(call,hmac){
 	if (this.readyState == 4 && this.status == 200) {
 		var responseObj = JSON.parse(this.responseText);
 		console.log(responseObj)
-        var error = respopnseObj.error
+        var error = responseObj.error
+        console.log(error)
         if (error == 'ok'){
 		  var result = responseObj.result
+		  console.log(result)
 		  var transferstatus = result['status']
 		  console.log(transferstatus)
 		  if (transferstatus == '0' || transferstatus == '1.0'){
@@ -529,7 +586,8 @@ function page4pt2(){
     var page4pt3 = document.getElementById('page4pt3')
     page4pt1.style.display = 'none'
     page4pt2.style.display = 'block'
-    page4pt3.style.display = 'none'  
+    page4pt3.style.display = 'none' 
+    document.getElementById('enterbutton4pt1').addEventListener('click',resetpages)
 }
 
 function page4pt3(){
@@ -539,7 +597,7 @@ function page4pt3(){
     page4pt1.style.display = 'none'
     page4pt2.style.display = 'none'
     page4pt3.style.display = 'block' 
-    document.getElementById('enterbutton4').addEventListener('click',resetpages)
+    document.getElementById('enterbutton4pt2').addEventListener('click',resetpages)
 }
 
 //Initial Function called

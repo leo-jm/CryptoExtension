@@ -1,4 +1,4 @@
-body,input,.tempdiv,.tempdivhover,.cancelbutton,.topbar,.botbar,.enterbutton,#confirm{
+body,input,.tempdiv,.tempdivhover,.cancelbutton,.topbar,.botbar,.enterbutton,.buttontext,.pagedata,.bardata,#confirm{
 	font-family:Tahoma,Sans-serif;
 }
 
@@ -39,6 +39,7 @@ ul {
 	text-align:center;
 	height:115px;
 	font-size:15px;
+	word-wrap:break-word;
 }
 
 
@@ -53,7 +54,9 @@ ul {
 	text-align:center;
 	height:115px;
 	font-size:15px;
+	word-wrap:break-word;
 }
+
 
 .cancelbutton{
 	position: absolute;
@@ -105,12 +108,13 @@ ul {
 .botbarsettings{
 	background-color:#0b84e0;
 	min-width:400px;
-    height:40px;
+    height:50px;
     position: absolute;
     bottom:0;
     left:0;
     right:0;
-	top: 95%;
+	margin-bottom:0;
+	padding-bottom:0;
 }
 
 .pagedata{
@@ -127,6 +131,40 @@ ul {
     right: 4px;
     position: absolute;
 	text-align:center;
+}
+
+.buttonssettings{
+	float:right;
+	margin-top: 0px;
+	margin-right: 0px;
+	width:75px;
+}
+
+.buttontext{
+	display:block;
+	text-align:center;
+	padding: 7px 5px 5px 5px;
+	margin-top:0px;
+	margin-bottom:0px;
+	font-weight:bold;
+}
+
+.buttontext:hover{
+	background-color:white;
+}
+
+#selector{
+	top:30%;
+	margin-top: 20%;
+    margin-left: 70%;
+}
+
+#managekeysdata{
+	overflow-x:scroll;
+	bottom:50px;
+	margin-left: 15%;
+    margin-right: 50%;
+    width: 510px;
 }
 
 #transactioninfo{
