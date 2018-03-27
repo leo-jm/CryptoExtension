@@ -643,7 +643,13 @@ function parsecalldata(calldata){
 
 function buildcall(pub,address,amount,coin,priv){
 	//Build the call for the transfer based on call data
-	var call = 'version=1&key='+pub+'&cmd=create_withdrawal&amount='+amount+'&currency='+coin+'&address='+address
+	var autoconfirm = document.getElementById('autoconfirm')
+	console.log(autoconfirm.value)
+	if (autoconfirm.value == 'true'){
+		var call = 'version=1&key='+pub+'&cmd=create_withdrawal&amount='+amount+'&currency='+coin+'&address='+address+'&auto_confirm=1'
+	}else{
+		var call = 'version=1&key='+pub+'&cmd=create_withdrawal&amount='+amount+'&currency='+coin+'&address='+address
+	}
 	transferhmac(call,priv)
 }
 	
@@ -654,13 +660,13 @@ function transferhmac(call,priv){
 	shaObj.setHMACKey(priv, "TEXT");
 	shaObj.update(call);
 	var hmac = shaObj.getHMAC("HEX");
-	makecall(call,hmac)
+	makecall(call,hmac,priv)
 	//Data save
 	chrome.storage.sync.set({'transfercalled':true});
 	document.getElementById('waiting').innerHTML = 'Waiting for server response...'
 }
 
-function makecall(call,hmac){
+function makecall(call,hmac,priv){
 	//Makes the transfer call with the Coinpayments API
 	var xhttp = new XMLHttpRequest();
 	var HMAC = hmac;
@@ -677,6 +683,7 @@ function makecall(call,hmac){
 		  var result = responseObj.result
 		  console.log(result)
 		  var transferstatus = result['status']
+		  transferstatus = transferstatus.toString();
 		  console.log(transferstatus)
 		  //If the status is 0 or 1.0 an email confirmation is needed
 		  if (transferstatus == '0' || transferstatus == '1.0'){
@@ -684,13 +691,18 @@ function makecall(call,hmac){
 			 chrome.storage.sync.set({'page4part':'2'}); 
 			 page4pt2()
 		  }else{
-			  //If teh status is 1 then no email confirmation is needed
+			  //If the status is 1 then no email confirmation is needed
 			  if (transferstatus == '1'){
 				//Data save
 				chrome.storage.sync.set({'page4part':'3'}); 
 				page4pt3() 
 			  }
 		  }
+          }else{
+          	if (error == 'This key does not have auto confirm permssion!'){
+          		call = call.replace('&auto_confirm=1','')
+          		transferhmac(call,priv)
+          	}
           }
         
 	}
