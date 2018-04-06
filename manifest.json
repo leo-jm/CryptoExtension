@@ -1,9 +1,8 @@
 {
   "manifest_version": 2,
-
   "name": "PayWithCrypto",
   "description": "Google Chrome Extension that allows you to easily pay with cryptocurrency all in one tab",
-  "version": "1.0",
+  "version": "0.0.1",
   "options_page":"settings.html",
   
   "browser_action": {
