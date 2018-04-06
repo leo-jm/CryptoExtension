@@ -32,4 +32,8 @@ you can choose to use autoconfirm (No email confirmation needed) or not. To use 
 5. After confirming the transaction, the extension will make the API call to make the transaction. The extension will confirm a
 successful transaction call or will ask for an email confirmation.
 
-### Make API Keys
+#### Make API Keys
+### Supported Wallets
+* Coinpayments
+## Acknowledgments
+I am using Caligatio's code for javascript SHA hashing. https://github.com/Caligatio/jsSHA
