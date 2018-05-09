@@ -239,6 +239,12 @@ function sortvalstxfee(val){
 				var pub = key[1]
 				var priv = key[2]
 				buildtxfeecall(pub,priv,coin)
+			}else{
+				if (keyname[0].concat(keyname[1] == 'cb')){
+				var keyname = key[0]
+				var key = key[1]
+				console.log(key)
+			}
 		}
 	}
 }

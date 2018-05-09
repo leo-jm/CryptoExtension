@@ -29,8 +29,38 @@ function coinbase(){
 	coinbase.style.display = 'block'
 	coinpayments.className = 'closed'
 	coinbase.className = 'open'
+	document.getElementById('cboptions').addEventListener('change',cbchooseoption)
 	checkentercb()
 	check()
+}
+
+function cbchooseoption(){
+	var option = document.getElementById('cboptions').value;
+	if (option == 'apikeys'){
+		cbapi()
+	}else{
+		if (option == 'oauth2'){
+			cboauth2()
+		}
+	}
+}
+
+function cbapi(){
+	var api = document.getElementById('cbapikey')
+	var oauth2 = document.getElementById('cboauth2')
+	api.style.display = 'block'
+	oauth2.style.display = 'none'
+	api.className = 'open'
+	oauth2.className = 'closed'
+}
+
+function cboauth2(){
+	var api = document.getElementById('cbapikey')
+	var oauth2 = document.getElementById('cboauth2')
+	api.style.display = 'none'
+	oauth2.style.display = 'block'
+	api.className = 'closed'
+	oauth2.className = 'open'
 }
 
 function choosewallet(){
@@ -53,8 +83,19 @@ function checkentercp(){
 	document.getElementById('enterbutton1').addEventListener('click',cpgetkeyvals)
 }
 
+function cpgetkeyvals(){
+	getkeyvals(entercp)
+}
+
 function checkentercb(){
-	document.getElementById('enterbutton2').addEventListener('click',entercb)
+	document.getElementById('enterbutton2').addEventListener('click',cbgetkeyvals)
+}
+
+function cbgetkeyvals(){
+	var key = document.getElementById('cb_key').value
+	if (key.length != 0){
+		getkeyvals(entercb)
+	}
 }
 
 function getkeyvals(callback){
@@ -67,8 +108,37 @@ function getkeyvals(callback){
 	});
 }
 
-function cpgetkeyvals(){
-	getkeyvals(entercp)
+function entercb(vals){
+	console.log(vals);
+	var keys = vals.keys
+	console.log(keys)
+    if (keys.length == 0 || keys == undefined){
+        console.log(keys)
+        var key = document.getElementById('cb_key').value
+        if (key.length != 0){
+            console.log(keys)
+            chrome.storage.sync.set({'keys':[['cb1',key]]});
+            //['cb1',key],['cb2',key]
+        }
+    }else{
+        var len = keys.length
+        len = len - 1
+        var lastkey = keys[len]
+        console.log(lastkey)
+        var keyid = lastkey[0]
+        console.log(keyid)
+        var keyidnum = Number(keyid[2])
+        var nextidnum = keyidnum+1
+        console.log(keyidnum)
+        var newkeyid = 'cb'+ nextidnum
+        var key = document.getElementById('cb_key').value
+        var newkey = [newkeyid,key]
+        keys.push(newkey)
+        if (key.length != 0){
+            console.log(keys)
+            chrome.storage.sync.set({'keys':keys});
+        }
+    }
 }
 
 function entercp(vals){
@@ -94,7 +164,7 @@ function entercp(vals){
         var keyidnum = Number(keyid[2])
         var nextidnum = keyidnum+1
         console.log(keyidnum)
-        var newkeyid = keyid[0]+ keyid[1]+ nextidnum
+        var newkeyid = 'cp'+ nextidnum
         var pub = document.getElementById('pub_key').value
         var priv = document.getElementById('priv_key').value
         var newkey = [newkeyid,pub,priv]
@@ -110,11 +180,6 @@ function entercp(vals){
     }
 }
 
-
-function entercb(){
-	document.getElementById('demo').innerHTML = 'entercb'
-}
-
 function sortkeys(vals){
 	var keys = vals.keys
 	if (keys.length == 0 || keys == undefined){
@@ -125,13 +190,23 @@ function sortkeys(vals){
         for (i=0; i<len; i++){
 			var key = keys[i]
 			var keyid = key[0]
-			if (keyid[0,1] = 'cp'){
+			console.log(keyid.substring(0,2))
+			if (keyid.substring(0,2) == 'cp'){
 				var pub = key[1]
 				var id = 'tempdiv'.concat(i+1)
 				var wallet = 'Coinpayments'
 				var divclass = 'tempdiv'
 				var temp = new tempkeyinfo(wallet,pub,keyid,id,divclass)
 				temp.creatediv(keyid)
+			}else{
+				if (keyid.substring(0,2) == 'cb'){
+					var pub = key[1]
+					var id = 'tempdiv'.concat(i+1)
+					var wallet = 'Coinbase'
+					var divclass = 'tempdiv'
+					var temp = new tempkeyinfo(wallet,pub,keyid,id,divclass)
+					temp.creatediv(keyid)
+				}
 			}
 		}
     }

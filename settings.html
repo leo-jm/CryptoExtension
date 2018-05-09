@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Getting Started Extension's Popup</title>
+		<title>Settings</title>
 		<link rel="stylesheet" type="text/css" href="popup.css">
 	</head>
 	<body id = 'mainpage'>
@@ -19,8 +19,17 @@
 				<button id='enterbutton1' class = 'enterbutton'>Enter</button>
 			</div>
 			<div id = 'coinbase' style='display:none;' class = 'closed'>
-				coinbase
-				<button id='enterbutton2' class = 'enterbutton'>Enter</button>
+				<select id ='cboptions'>
+					<option value = 'apikeys'>API Key</option>
+					<option value = 'oauth2'>OAuth2</option>
+				</select>
+				<div id = 'cbapikey' style='display: block;' class = 'open'>
+						API Key: <input type="text" id = 'cb_key' placeholder="Enter key" style='color:#000000;display: block'>
+						<button id='enterbutton2' class = 'enterbutton'>Enter</button>
+				</div>
+				<div id = 'cboauth2' style='display: none;' class = 'closed'>
+					OAuth2 Coming Soon
+				</div>
 			</div>
 			</div>
 		</div>
