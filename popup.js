@@ -87,8 +87,8 @@ function page3(){
 	console.log(document.getElementById("page3").className)
 	var amount = document.getElementById('amount').value;
 	var coin = document.getElementById('coin').value;
-		if (address.length != 0) {
-			if (amount.length != 0){
+		if (amount.length != 0) {
+			if (coin.length != 0){
 				var page1 = document.getElementById("page1");
 				var page2 = document.getElementById("page2");
 				var page3 = document.getElementById("page3");
